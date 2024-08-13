@@ -8,6 +8,11 @@ use App\Models\Patient;
 
 use App\Http\Requests\StoreAppointmentRequest;
 use App\Http\Requests\UpdateAppointmentRequest;
+use App\Mail\AppointmentScheduledEmail;
+use App\Models\Department;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class AppointmentController extends Controller
 {
@@ -26,8 +31,12 @@ class AppointmentController extends Controller
     public function create()
     {
         $patients = Patient::all();
-        $doctors =Doctor::all();
-        return view('appointments.create', compact('patients', 'doctors'));
+        $doctors = Doctor::all();
+        $departments=Department::with('doctors')->get();
+
+        return view('appointments.create', compact('patients', 'doctors','departments'));
+
+
     }
 
     /**
@@ -36,7 +45,12 @@ class AppointmentController extends Controller
     public function store(StoreAppointmentRequest $request)
     {
 
-        Appointment::create($request->all());
+        $appointment=Appointment::create($request->all());
+   //mail for patient conformation
+        Mail::to(Auth::user())->queue(new AppointmentScheduledEmail($appointment));
+  //mail for doctor
+        // Mail::to(Auth::use)->queue(new AppointmentScheduledEmail($appointment));
+
         return redirect()->route('appointments.index')->with('success', 'Appointment created successfully.');
     }
 
@@ -76,7 +90,10 @@ class AppointmentController extends Controller
      */
     public function destroy(Appointment $appointment)
     {
-        $appointment = Appointment::findOrFail($appointment);
+
+        $appointment = Appointment::findOrFail($appointment->id);
+
+
         $appointment->delete();
 
         return redirect()->route('appointments.index')->with('success', 'Appointment deleted successfully.');

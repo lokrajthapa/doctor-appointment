@@ -24,8 +24,8 @@ class StorePatientRequest extends FormRequest
         return [
             // 'user_id' => 'required|exists:users,id',
             'dob' => 'required|date',
-            'gender' => 'nullable|in:male,female,other',
-            'phone' => 'nullable|string|max:15',
+            'gender' => 'required|nullable|in:male,female,other',
+            'phone' => 'required|nullable|string|max:15',
         ];
     }
 }
