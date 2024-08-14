@@ -21,7 +21,22 @@ class AppointmentController extends Controller
      */
     public function index()
     {
-        $appointments = Appointment::with(['patient', 'doctor'])->get();
+        $user=Auth::user();
+
+        if($user->user_type==='doctor')
+          $appointments =  $user->doctor->appointments;
+
+        else if(Auth::user()->user_type==='patient')
+        {
+            $appointments = $user->patient->appointments;
+        }
+        else
+        {
+
+            $appointments = Appointment::with(['patient', 'doctor'])->get();
+        }
+
+
         return view('appointments.index', compact('appointments'));
     }
 
@@ -46,10 +61,13 @@ class AppointmentController extends Controller
     {
 
         $appointment=Appointment::create($request->all());
+        $doctor_email=$appointment->doctor->user->email;
+
    //mail for patient conformation
-        Mail::to(Auth::user())->queue(new AppointmentScheduledEmail($appointment));
-  //mail for doctor
-        // Mail::to(Auth::use)->queue(new AppointmentScheduledEmail($appointment));
+    Mail::to(Auth::user())->queue(new AppointmentScheduledEmail($appointment));
+
+    //mail for doctor
+     Mail::to($doctor_email)->queue(new AppointmentScheduledEmail($appointment));
 
         return redirect()->route('appointments.index')->with('success', 'Appointment created successfully.');
     }
