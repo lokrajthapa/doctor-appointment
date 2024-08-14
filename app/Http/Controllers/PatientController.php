@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Patient;
 use App\Http\Requests\StorePatientRequest;
 use App\Http\Requests\UpdatePatientRequest;
+use Illuminate\Support\Facades\Gate;
+
 
 class PatientController extends Controller
 {
@@ -50,6 +52,7 @@ class PatientController extends Controller
      */
     public function edit(Patient $patient)
     {
+        Gate::authorize('edit', $patient);
         return view('patients.edit', compact('patient'));
     }
 
@@ -58,6 +61,7 @@ class PatientController extends Controller
      */
     public function update(UpdatePatientRequest $request, Patient $patient)
     {
+        Gate::authorize('update', $patient);
         $patient->update();
 
         return redirect()->route('patients.index')->with('success', 'Patient updated successfully.');

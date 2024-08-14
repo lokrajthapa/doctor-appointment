@@ -21,7 +21,7 @@ class DoctorPolicy
      */
     public function view(User $user, Doctor $doctor): bool
     {
-        //
+        return $user->id === $doctor->user_id;
     }
 
     /**
@@ -32,12 +32,17 @@ class DoctorPolicy
         //
     }
 
+    public function edit(User $user, Doctor $doctor): bool
+    {
+        return $user->id === $doctor->user_id;
+    }
+
     /**
      * Determine whether the user can update the model.
      */
     public function update(User $user, Doctor $doctor): bool
     {
-        //
+        return $user->id === $doctor->user_id;
     }
 
     /**
@@ -45,7 +50,7 @@ class DoctorPolicy
      */
     public function delete(User $user, Doctor $doctor): bool
     {
-        //
+
     }
 
     /**

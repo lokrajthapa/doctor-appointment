@@ -6,6 +6,8 @@ use App\Models\Doctor;
 use App\Http\Requests\StoreDoctorRequest;
 use App\Http\Requests\UpdateDoctorRequest;
 use App\Models\Department;
+use Illuminate\Support\Facades\Gate;
+
 
 class DoctorController extends Controller
 {
@@ -50,6 +52,7 @@ class DoctorController extends Controller
      */
     public function edit(Doctor $doctor)
     {
+        Gate::authorize('edit', $doctor);
         return view('doctors.edit', compact('doctor'));
     }
 
@@ -58,6 +61,7 @@ class DoctorController extends Controller
      */
     public function update(UpdateDoctorRequest $request, Doctor $doctor)
     {
+        Gate::authorize('update', $doctor);
         $doctor->update($request->all());
 
         return redirect()->route('doctors.index')->with('success', 'Doctor updated successfully.');

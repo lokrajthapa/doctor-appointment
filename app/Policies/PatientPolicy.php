@@ -21,7 +21,7 @@ class PatientPolicy
      */
     public function view(User $user, Patient $patient): bool
     {
-        //
+        return $user->id === $patient->user_id;
     }
 
     /**
@@ -37,7 +37,7 @@ class PatientPolicy
      */
     public function update(User $user, Patient $patient): bool
     {
-        //
+        return $user->id === $patient->user_id;
     }
 
     /**
@@ -45,7 +45,7 @@ class PatientPolicy
      */
     public function delete(User $user, Patient $patient): bool
     {
-        //
+        return false;
     }
 
     /**
