@@ -25,9 +25,16 @@ class StoreAppointmentRequest extends FormRequest
         return [
             'patient_id' => 'required|exists:patients,id',
             'doctor_id' => 'required|exists:doctors,id',
-            'appointment_time' => 'required|date',
+            'appointment_time' => 'required|date|after_or_equal:today',
             'department_name' => 'required|string|max:255',
             'reason' => 'required|string',
         ];
+    }
+
+    public function messages(){
+        return [
+            'appointment_date.after_or_equal' => 'The appointment date must be today or a future date.',
+        ];
+
     }
 }

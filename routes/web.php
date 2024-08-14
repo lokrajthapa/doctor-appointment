@@ -23,6 +23,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('doctors', DoctorController::class);
     Route::resource('appointments', AppointmentController::class);
 
+    //for search
+    Route::get('/search',[AppointmentController::class,'search']);
+
 });
 
 require __DIR__.'/auth.php';

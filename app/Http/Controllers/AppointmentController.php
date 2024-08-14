@@ -19,16 +19,23 @@ class AppointmentController extends Controller
     /**
      * Display a listing of the resource.
      */
+   protected $user;
+
+   public function __construct()
+   {
+      $this->user=Auth::user();
+   }
+
     public function index()
     {
         $user=Auth::user();
 
-        if($user->user_type==='doctor')
-          $appointments =  $user->doctor->appointments;
+        if($this->user->user_type==='doctor')
+          $appointments =  $this->user->doctor->appointments;
 
         else if(Auth::user()->user_type==='patient')
         {
-            $appointments = $user->patient->appointments;
+            $appointments = $this->user->patient->appointments;
         }
         else
         {
@@ -64,10 +71,10 @@ class AppointmentController extends Controller
         $doctor_email=$appointment->doctor->user->email;
 
    //mail for patient conformation
-    Mail::to(Auth::user())->queue(new AppointmentScheduledEmail($appointment));
+    //  Mail::to(Auth::user())->queue(new AppointmentScheduledEmail($appointment));
 
     //mail for doctor
-     Mail::to($doctor_email)->queue(new AppointmentScheduledEmail($appointment));
+    //   Mail::to($doctor_email)->queue(new AppointmentScheduledEmail($appointment));
 
         return redirect()->route('appointments.index')->with('success', 'Appointment created successfully.');
     }
@@ -115,5 +122,16 @@ class AppointmentController extends Controller
         $appointment->delete();
 
         return redirect()->route('appointments.index')->with('success', 'Appointment deleted successfully.');
+    }
+
+    public function search(Request $request)
+    {
+
+        $request->validate([
+            'date'=>'required | date',
+        ]);
+        $date=$request->date;
+        $appointments = $this->user->doctor->appointments()->whereDate('appointment_time', $date)->get();
+        return view('appointments.index', compact('appointments'));
     }
 }

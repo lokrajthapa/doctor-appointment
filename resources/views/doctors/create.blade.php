@@ -21,15 +21,14 @@
 <form action="{{ route('doctors.store') }}" method="POST"
     class="space-y-6 bg-white p-8 rounded-lg shadow-lg max-w-lg mx-auto">
     @csrf
-    <div class="form-group">
-        <label for="user_id" class="block text-sm font-medium text-gray-700">User Id</label>
-        <input type="text" name="user_id" value="{{ Auth::user()->id }}"
+
+        <input type="hidden" name="user_id" value="{{ Auth::user()->id }}"
             class="mt-1 block w-full p-3  border @error('user_id') border-red-500 @else border-gray-300 @enderror rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             readonly>
         @error('user_id')
             <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
         @enderror
-    </div>
+
     <div class="form-group">
         <label for="department_id" class="block text-sm font-medium text-gray-700">Department</label>
         <select name="department_id" class="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
