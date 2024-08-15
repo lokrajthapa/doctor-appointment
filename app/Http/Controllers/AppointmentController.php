@@ -71,10 +71,10 @@ class AppointmentController extends Controller
         $doctor_email=$appointment->doctor->user->email;
 
    //mail for patient conformation
-    //  Mail::to(Auth::user())->queue(new AppointmentScheduledEmail($appointment));
+      Mail::to(Auth::user())->queue(new AppointmentScheduledEmail($appointment));
 
     //mail for doctor
-    //   Mail::to($doctor_email)->queue(new AppointmentScheduledEmail($appointment));
+        Mail::to($doctor_email)->queue(new AppointmentScheduledEmail($appointment));
 
         return redirect()->route('appointments.index')->with('success', 'Appointment created successfully.');
     }
