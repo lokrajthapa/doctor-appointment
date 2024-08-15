@@ -31,6 +31,7 @@ class AppointmentController extends Controller
         $user=Auth::user();
 
         if($this->user->user_type==='doctor')
+
           $appointments =  $this->user->doctor->appointments;
 
         else if(Auth::user()->user_type==='patient')
@@ -39,10 +40,8 @@ class AppointmentController extends Controller
         }
         else
         {
-
             $appointments = Appointment::with(['patient', 'doctor'])->get();
         }
-
 
         return view('appointments.index', compact('appointments'));
     }
@@ -52,11 +51,11 @@ class AppointmentController extends Controller
      */
     public function create()
     {
-        $patients = Patient::all();
-        $doctors = Doctor::all();
-        $departments=Department::with('doctors')->get();
+        // $patients = Patient::all();
+        // $doctors = Doctor::all();
+        $departments=Department::with(['doctors','doctors.user','doctors.schedules'])->get()->toArray();
 
-        return view('appointments.create', compact('patients', 'doctors','departments'));
+        return view('appointments.create', compact('departments'));
 
 
     }
@@ -64,17 +63,18 @@ class AppointmentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreAppointmentRequest $request)
+    public function store(Request $request)
     {
+      dd($request->all());
 
         $appointment=Appointment::create($request->all());
-        $doctor_email=$appointment->doctor->user->email;
+       // $doctor_email=$appointment->doctor->user->email;
 
    //mail for patient conformation
-      Mail::to(Auth::user())->queue(new AppointmentScheduledEmail($appointment));
+      //Mail::to(Auth::user())->queue(new AppointmentScheduledEmail($appointment));
 
     //mail for doctor
-        Mail::to($doctor_email)->queue(new AppointmentScheduledEmail($appointment));
+        //Mail::to($doctor_email)->queue(new AppointmentScheduledEmail($appointment));
 
         return redirect()->route('appointments.index')->with('success', 'Appointment created successfully.');
     }

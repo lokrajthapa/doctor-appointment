@@ -49,7 +49,7 @@
                                 Department Name
                             </th>
                             <th scope="col" class="px-6 py-3">
-                                Department name
+                                Doctor name
                             </th>
                             <th scope="col" class="px-6 py-3">
                                 Date
