@@ -65,10 +65,10 @@ class AppointmentController extends Controller
      */
     public function store(Request $request)
     {
-      dd($request->all());
+
 
         $appointment=Appointment::create($request->all());
-       // $doctor_email=$appointment->doctor->user->email;
+        //$doctor_email=$appointment->doctor->user->email;
 
    //mail for patient conformation
       //Mail::to(Auth::user())->queue(new AppointmentScheduledEmail($appointment));

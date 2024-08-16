@@ -24,7 +24,7 @@ class StoreScheduleRequest extends FormRequest
 
         return [
             'doctor_id' => 'required|exists:doctors,id',
-            'day' => 'required|string|max:255',
+            'date' => 'required|string|max:255',
             'start_time' => 'required|date_format:H:i',
             'end_time' => ['required', 'date_format:H:i', function ($attribute, $value, $fail) {
                 if (strtotime($value) <= strtotime($this->start_time)) {

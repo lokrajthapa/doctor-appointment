@@ -22,12 +22,20 @@
                   <p class="text-red-500 text-xs italic">{{ $message }}</p>
                  @enderror
             </div>
-
             <div class="mb-4">
+                <label for="date" class="block text-gray-700 text-sm font-bold mb-2">Days</label>
+
+                <input name="date" type="date" class="block  text-gray-700 ">
+
+                @error('date')
+                <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                @enderror
+            </div>
+
+            {{-- <div class="mb-4">
                 <label for="day" class="block text-gray-700 text-sm font-bold mb-2">Days</label>
 
                 <select name="day" id="day" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-
                         <option value="sunday">Sunday</option>
                         <option value="monday">Monday</option>
                         <option value="tuesday">Tuesday</option>
@@ -36,10 +44,12 @@
                         <option value="friday">Friday</option>
                         <option value="saturday">Saturday</option>
                 </select>
+
+
                 @error('day')
                 <p class="text-red-500 text-xs italic">{{ $message }}</p>
                 @enderror
-            </div>
+            </div> --}}
 
 
 

@@ -10,7 +10,7 @@ class Schedule extends Model
 {
     use HasFactory;
 
-   protected $fillable= ['doctor_id','day','start_time','end_time'];
+   protected $fillable= ['doctor_id','date','start_time','end_time'];
 
    public function doctor():BelongsTo
    {
