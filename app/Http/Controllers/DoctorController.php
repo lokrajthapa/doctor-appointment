@@ -52,7 +52,8 @@ class DoctorController extends Controller
      */
     public function edit(Doctor $doctor)
     {
-        Gate::authorize('edit', $doctor);
+
+        // Gate::authorize('edit', $doctor);
         return view('doctors.edit', compact('doctor'));
     }
 
@@ -64,7 +65,7 @@ class DoctorController extends Controller
         Gate::authorize('update', $doctor);
         $doctor->update($request->all());
 
-        return redirect()->route('doctors.index')->with('success', 'Doctor updated successfully.');
+        return redirect()->route('dashboard')->with('success', 'Doctor updated successfully.');
     }
 
     /**
