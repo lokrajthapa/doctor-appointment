@@ -31,7 +31,7 @@
                 <option value="">Select a Doctor</option>
                 <template x-for="doctor in filteredDoctors" :key="doctor.id">
 
-                    <option :value="doctor.id" x-text="doctor.user.name"></option>
+                    <option :value="doctor.id" x-text="doctor.user.name" > </option>
                 </template>
             </select>
             @error('doctor_id')
@@ -43,13 +43,13 @@
             <label for="schedule" class="block text-sm font-medium text-gray-700">Available Schedules</label>
             <ul class="list-disc pl-5 mt-1 space-y-2">
                 <template x-for="schedule in filteredSchedules" :key="schedule.id">
-                    <li x-text="`${schedule.date}: ${schedule.start_time} - ${schedule.end_time}`" class="text-gray-700 bg-green-300 border border-gray-300 rounded-lg p-2 shadow-sm"></li>
+                    <li x-text="`${schedule.date}: ${schedule.start_time} - ${schedule.end_time}`" class="text-gray-700 bg-green-300 border border-gray-300 rounded-lg p-2 shadow-sm">  </li>
                 </template>
             </ul>
         </div>
         <div class="form-group">
             <label for="appointment_time" class="block text-sm font-medium text-gray-700">Appointment Time</label>
-            <input type="date" name="appointment_time" id="appointment_time"
+            <input type="datetime-local" name="appointment_time" id="appointment_time"
                 class="mt-1 block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 required>
             @error('appointment_time')

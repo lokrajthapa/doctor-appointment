@@ -72,7 +72,7 @@
                                         {{ $appointment->doctor->user->name }}
                                     </td>
                                     <td class="px-6 py-4">
-                                        {{ $appointment->appointment_time }}
+                                        {{ $appointment->time_format }}
                                     </td>
                                     <td class="px-6 py-4">
 

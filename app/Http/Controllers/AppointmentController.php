@@ -51,8 +51,7 @@ class AppointmentController extends Controller
      */
     public function create()
     {
-        // $patients = Patient::all();
-        // $doctors = Doctor::all();
+
         $departments=Department::with(['doctors','doctors.user','doctors.schedules'])->get()->toArray();
 
         return view('appointments.create', compact('departments'));
@@ -63,9 +62,8 @@ class AppointmentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreAppointmentRequest $request)
     {
-
 
         $appointment=Appointment::create($request->all());
         //$doctor_email=$appointment->doctor->user->email;

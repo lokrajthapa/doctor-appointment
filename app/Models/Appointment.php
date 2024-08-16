@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Carbon\Carbon;
 
 class Appointment extends Model
 {
@@ -28,6 +29,16 @@ class Appointment extends Model
         return $this->belongsTo(Doctor::class);
 
     }
+
+    public function getTimeFormatAttribute()
+    {
+
+       return Carbon::parse($this->appointment_time)->format('l, F j'). ',' .Carbon::parse($this->appointment_time)->format('g:i A');
+
+
+    }
+
+
 
 
 }
