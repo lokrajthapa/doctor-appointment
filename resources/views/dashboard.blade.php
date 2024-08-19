@@ -41,7 +41,7 @@
                         <div>
                     @endif
 
-                    @if (Auth::user()->user_type === 'patient')
+                @if (Auth::user()->user_type === 'patient')
                     <div class="flex">
 
 
@@ -70,15 +70,18 @@
 
 
 
-                    </div>
+                    <div class="m-2 gap-4">
                         {{ __("You're logged in!") }}
 
                     </div>
 
 
 
+
                 </div>
+
             </div>
         </div>
     </div>
+
 </x-app-layout>

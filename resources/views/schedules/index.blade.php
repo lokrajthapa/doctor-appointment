@@ -26,14 +26,14 @@
                     <div class="text-center mb-4">
                         <!-- Day -->
                         <div class="text-lg font-bold text-blue-600">
-                            {{ $schedule->date }}
+                            {{ $schedule->date_format }}
                         </div>
                         <div class="text-sm font-bold text-blue-600">
                             {{ $schedule->date_length }}
                         </div>
                     </div>
 
-                    <div class="flex gap-y-4">
+                    <div class="flex gap-y-4 gap-x-4">
                         <!-- Edit Button -->
                         <a href="{{ route('schedules.edit', $schedule) }}">
                             <button

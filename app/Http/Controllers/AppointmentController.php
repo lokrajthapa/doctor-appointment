@@ -6,6 +6,7 @@ use App\Models\Appointment;
 use App\Models\Doctor;
 use App\Models\Patient;
 
+
 use App\Http\Requests\StoreAppointmentRequest;
 use App\Http\Requests\UpdateAppointmentRequest;
 use App\Mail\AppointmentScheduledEmail;
@@ -28,6 +29,10 @@ class AppointmentController extends Controller
 
     public function index()
     {
+
+
+        // dd('you are here with doctor id'.$id);
+
         $user=Auth::user();
 
         if($this->user->user_type==='doctor')
@@ -131,5 +136,12 @@ class AppointmentController extends Controller
         $date=$request->date;
         $appointments = $this->user->doctor->appointments()->whereDate('appointment_time', $date)->get();
         return view('appointments.index', compact('appointments'));
+    }
+
+    public function bookAppointment($id)
+    {
+        $doctor=Doctor::with(['schedules'])->findorfail($id);
+
+         return view('appointments.create', compact('doctor'));
     }
 }

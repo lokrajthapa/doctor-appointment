@@ -5,6 +5,8 @@ use App\Http\Controllers\PatientController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ScheduleController;
+use App\Http\Controllers\DepartmentController;
+
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -22,8 +24,15 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('patients', PatientController::class);
     Route::resource('doctors', DoctorController::class);
+
+
+
     Route::resource('appointments', AppointmentController::class);
-    Route::resource('schedules', ScheduleController::class );
+    //for appointment booking
+    Route::get('doctorsToAppointment/{id}',[AppointmentController::class,'bookAppointment'])->name('doctor.to.appointment');
+    Route::resource('schedules', ScheduleController::class);
+    Route::resource('departments', DepartmentController::class);
+
 
     //for search
     Route::get('/search',[AppointmentController::class,'search']);
@@ -31,3 +40,11 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+
+
+
+
+        //  // Handle the image upload
+
+

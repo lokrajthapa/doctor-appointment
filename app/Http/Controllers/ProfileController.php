@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -26,15 +27,43 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        $user->fill($request->all());
+
+        // Handle the image upload if a new image is provided
+        if ($request->hasFile('image')) {
+
+            // Store the new image and get the file name
+            $path = $request->file('image')->store('profile_images', 'public');
+            $filename = basename($path);
+
+            // Delete the old image if it exists
+            if ($user->image) {
+                Storage::disk('public')->delete('profile_images/' . $user->image);
+            }
+
+            // Update the user's image with just the filename
+            $user->image = $filename;
+        }
+        // Fill the user's other fields with validated data
+
+
+
+
+
+        // Check if the email was updated; if so, reset email verification
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
         }
 
-        $request->user()->save();
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+
+        // Save the user with the updated data
+        $user->save();
+
+        // Redirect back to the profile edit page with a success message
+        return Redirect::route('profile.edit')->with('status', 'Profile updated successfully!');
     }
 
     /**

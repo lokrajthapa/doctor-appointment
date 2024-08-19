@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Carbon\Carbon;
+
 
 class Schedule extends Model
 {
@@ -20,6 +22,15 @@ class Schedule extends Model
 
    public function getDateLengthAttribute()
    {
-      return $this->start_time.'-'.$this->end_time;
+      return Carbon::parse($this->start_time)->format('g:i A').'-'.Carbon::parse($this->end_time)->format('g:i A');
    }
+
+   public function getDateFormatAttribute()
+   {
+
+      return Carbon::parse($this->date)->format('l, F j');
+
+
+   }
+
 }
