@@ -43,9 +43,6 @@
 
                 @if (Auth::user()->user_type === 'patient')
                     <div class="flex">
-
-
-
                        @if(isset(Auth::user()->patient))
 
                             <a href="{{ route("patients.edit",Auth::user()->patient->id) }}">
@@ -53,15 +50,12 @@
                                     Edit Profile
                                 </button>
                             </a>
-
                         @else
-
                             <a href="{{ route("patients.create") }}">
                                 <button class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
                                     First fill patient form
                                 </button>
                             </a>
-
                         @endif
 
                     <div>

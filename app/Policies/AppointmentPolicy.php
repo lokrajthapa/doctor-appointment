@@ -4,32 +4,42 @@ namespace App\Policies;
 
 use App\Models\Appointment;
 use App\Models\User;
+use App\Models\Doctor;
 use Illuminate\Auth\Access\Response;
+
 
 class AppointmentPolicy
 {
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user): bool
+    public function viewAny(): bool
     {
-        //
+        return true;
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Appointment $appointment): bool
+    public function view(Doctor $doctor, Appointment $appointment): bool
     {
-        //
+        return $doctor->id === $appointment->doctor_id;
     }
 
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): bool
+    public function create(Doctor $doctor, Appointment $appointment): bool
     {
+        return $doctor->id === $appointment->doctor_id;
+    }
 
+    /**
+     * Determine whether the Doctor can update the model.
+     */
+    public function edit(User $user, Appointment $appointment): bool
+    {
+        return $user->doctor->id=== $appointment->doctor_id;
     }
 
     /**
@@ -37,7 +47,7 @@ class AppointmentPolicy
      */
     public function update(User $user, Appointment $appointment): bool
     {
-        //
+        return $user->doctor->id=== $appointment->doctor_id;
     }
 
     /**
@@ -45,7 +55,7 @@ class AppointmentPolicy
      */
     public function delete(User $user, Appointment $appointment): bool
     {
-        //
+        return $user->doctor->id === $appointment->doctor_id;
     }
 
     /**

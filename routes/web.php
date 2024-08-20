@@ -28,6 +28,7 @@ Route::middleware('auth')->group(function () {
 
 
     Route::resource('appointments', AppointmentController::class);
+
     //for appointment booking
     Route::get('doctorsToAppointment/{id}',[AppointmentController::class,'bookAppointment'])->name('doctor.to.appointment');
     Route::resource('schedules', ScheduleController::class);

@@ -9,6 +9,7 @@ use App\Models\Patient;
 
 use App\Http\Requests\StoreAppointmentRequest;
 use App\Http\Requests\UpdateAppointmentRequest;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use App\Mail\AppointmentScheduledEmail;
 use App\Models\Department;
 use Illuminate\Http\Request;
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\Mail;
 
 class AppointmentController extends Controller
 {
+    use AuthorizesRequests;
     /**
      * Display a listing of the resource.
      */
@@ -28,11 +30,10 @@ class AppointmentController extends Controller
    }
 
     public function index()
+
     {
 
-
         // dd('you are here with doctor id'.$id);
-
         $user=Auth::user();
 
         if($this->user->user_type==='doctor')
@@ -70,6 +71,7 @@ class AppointmentController extends Controller
     public function store(StoreAppointmentRequest $request)
     {
 
+
         $appointment=Appointment::create($request->all());
         //$doctor_email=$appointment->doctor->user->email;
 
@@ -94,21 +96,25 @@ class AppointmentController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Appointment $appointment)
+    public function edit($id)
     {
-        $appointment = Appointment::findOrFail($appointment);
-        $patients = Patient::all();
-        $doctors = Doctor::all();
-        return view('appointments.edit', compact('appointment', 'patients', 'doctors'));
+
+        $appointment = Appointment::findOrFail($id);
+
+        $this->authorize('edit', $appointment);
+
+        return view('appointments.edit', compact('appointment'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateAppointmentRequest $request, Appointment $appointment)
+    public function update(UpdateAppointmentRequest $request, $id)
     {
 
-        $appointment = Appointment::findOrFail($appointment);
+        $appointment = Appointment::findOrFail($id);
+        $this->authorize('update', $appointment);
+
         $appointment->update($request->all());
         return redirect()->route('appointments.index')->with('success', 'Appointment updated successfully.');
     }
@@ -120,7 +126,7 @@ class AppointmentController extends Controller
     {
 
         $appointment = Appointment::findOrFail($appointment->id);
-
+        $this->authorize('delete', $appointment);
 
         $appointment->delete();
 
@@ -136,6 +142,7 @@ class AppointmentController extends Controller
         $date=$request->date;
         $appointments = $this->user->doctor->appointments()->whereDate('appointment_time', $date)->get();
         return view('appointments.index', compact('appointments'));
+
     }
 
     public function bookAppointment($id)

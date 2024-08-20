@@ -27,9 +27,10 @@ class PatientPolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): bool
+    public function create(User $user, Patient $patient): bool
     {
-        //
+        return $user->id === $patient->user_id;
+
     }
 
     /**

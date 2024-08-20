@@ -42,10 +42,10 @@
                             </button>
                         </a>
                         <form action="{{ route('schedules.destroy', $schedule) }}" method="POST"
-                            style="display:inline;">
+                            style="display:inline;" >
                             @csrf
                             @method('DELETE')
-                            <button
+                            <button onclick="return confirm('Are you sure you want to delete this schedule? This action cannot be undone.')"
                                 class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                                 Delete
                             </button>
