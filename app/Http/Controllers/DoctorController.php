@@ -6,11 +6,13 @@ use App\Models\Doctor;
 use App\Http\Requests\StoreDoctorRequest;
 use App\Http\Requests\UpdateDoctorRequest;
 use App\Models\Department;
-use Illuminate\Support\Facades\Gate;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+
 
 
 class DoctorController extends Controller
 {
+    use AuthorizesRequests;
     /**
      * Display a listing of the resource.
      */
@@ -53,7 +55,8 @@ class DoctorController extends Controller
     public function edit(Doctor $doctor)
     {
 
-        // Gate::authorize('edit', $doctor);
+        $this->authorize('edit', $doctor);
+
         return view('doctors.edit', compact('doctor'));
     }
 
@@ -62,7 +65,7 @@ class DoctorController extends Controller
      */
     public function update(UpdateDoctorRequest $request, Doctor $doctor)
     {
-        Gate::authorize('update', $doctor);
+        $this->authorize('update', $doctor);
         $doctor->update($request->all());
 
         return redirect()->route('dashboard')->with('success', 'Doctor updated successfully.');
@@ -73,6 +76,7 @@ class DoctorController extends Controller
      */
     public function destroy(Doctor $doctor)
     {
+        $this->authorize('delete', $doctor);
         $doctor->delete();
 
         return redirect()->route('doctors.index')->with('success', 'Doctor deleted successfully.');

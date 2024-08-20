@@ -50,7 +50,7 @@ class DoctorPolicy
      */
     public function delete(User $user, Doctor $doctor): bool
     {
-
+        return $user->id === $doctor->user_id;
     }
 
     /**

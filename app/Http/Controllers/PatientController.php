@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Patient;
 use App\Http\Requests\StorePatientRequest;
 use App\Http\Requests\UpdatePatientRequest;
-use Illuminate\Support\Facades\Gate;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+
 
 
 class PatientController extends Controller
 {
+    use AuthorizesRequests;
     /**
      * Display a listing of the resource.
      */
@@ -52,7 +54,7 @@ class PatientController extends Controller
      */
     public function edit(Patient $patient)
     {
-        // Gate::authorize('edit', $patient);
+        $this->authorize('edit', $patient);
         return view('patients.edit', compact('patient'));
     }
 
@@ -61,7 +63,7 @@ class PatientController extends Controller
      */
     public function update(UpdatePatientRequest $request, Patient $patient)
     {
-        // Gate::authorize('update', $patient);
+        $this->authorize('edit', $patient);
         $patient->update($request->all());
          return redirect()->route('dashboard')->with('success', 'Patient updated successfully.');
     }
@@ -71,6 +73,7 @@ class PatientController extends Controller
      */
     public function destroy(Patient $patient)
     {
+        $this->authorize('edit', $patient);
         $patient->delete();
 
         return redirect()->route('patients.index')->with('success', 'Patient deleted successfully.');
