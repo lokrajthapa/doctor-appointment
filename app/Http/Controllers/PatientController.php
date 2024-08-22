@@ -18,6 +18,7 @@ class PatientController extends Controller
     public function index()
     {
         $patients = Patient::with('user')->get(); // Retrieve all patients with associated user
+        //remove comments
         return view('patients.index', compact('patients'));
     }
 
