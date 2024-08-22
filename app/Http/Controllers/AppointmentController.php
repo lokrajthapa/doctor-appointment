@@ -33,7 +33,7 @@ class AppointmentController extends Controller
 
     {
 
-        // dd('you are here with doctor id'.$id);
+        // dd('you are here with doctor id'.$id); //remove diedump
         $user=Auth::user();
 
         if($this->user->user_type==='doctor')
@@ -74,7 +74,7 @@ class AppointmentController extends Controller
 
         $appointment=Appointment::create($request->all());
         //$doctor_email=$appointment->doctor->user->email;
-
+//TODO: remove unused code
    //mail for patient conformation
       //Mail::to(Auth::user())->queue(new AppointmentScheduledEmail($appointment));
 
@@ -135,7 +135,7 @@ class AppointmentController extends Controller
 
     public function search(Request $request)
     {
-
+//TODO:  make this search functionality inside index
         $request->validate([
             'date'=>'required | date',
         ]);
