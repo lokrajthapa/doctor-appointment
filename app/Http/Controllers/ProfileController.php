@@ -30,7 +30,7 @@ class ProfileController extends Controller
         $user = $request->user();
 
         $user->fill($request->all());
-
+//TODO: remove comments and also make the logical part in seperate service class
         // Handle the image upload if a new image is provided
         if ($request->hasFile('image')) {
 
