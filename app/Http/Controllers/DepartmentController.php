@@ -52,7 +52,7 @@ class DepartmentController extends Controller
     public function edit(Department $department)
     {
 
-        $department=Department::findorFail($department->id);
+        $department=Department::findorFail($department->id);  //i think no need of this line
 
         return view('departments.edit', compact('department'));
     }
