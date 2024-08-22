@@ -12,6 +12,7 @@ use App\Http\Requests\UpdateAppointmentRequest;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use App\Mail\AppointmentScheduledEmail;
 use App\Models\Department;
+use App\services\AppointmentSearchService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -33,7 +34,7 @@ class AppointmentController extends Controller
 
     {
 
-        // dd('you are here with doctor id'.$id);
+
         $user=Auth::user();
 
         if($this->user->user_type==='doctor')
@@ -73,13 +74,13 @@ class AppointmentController extends Controller
 
 
         $appointment=Appointment::create($request->all());
-        //$doctor_email=$appointment->doctor->user->email;
+        $doctor_email=$appointment->doctor->user->email;
 
    //mail for patient conformation
-      //Mail::to(Auth::user())->queue(new AppointmentScheduledEmail($appointment));
+      Mail::to(Auth::user())->queue(new AppointmentScheduledEmail($appointment));
 
     //mail for doctor
-        //Mail::to($doctor_email)->queue(new AppointmentScheduledEmail($appointment));
+        Mail::to($doctor_email)->queue(new AppointmentScheduledEmail($appointment));
 
         return redirect()->route('appointments.index')->with('success', 'Appointment created successfully.');
     }
@@ -139,9 +140,11 @@ class AppointmentController extends Controller
         $request->validate([
             'date'=>'required | date',
         ]);
-        $date=$request->date;
-        $appointments = $this->user->doctor->appointments()->whereDate('appointment_time', $date)->get();
-        return view('appointments.index', compact('appointments'));
+
+      $appointments = new AppointmentSearchService();
+
+      $appointments->searchAppointment($request);
+      return view('appointments.index', compact('appointments'));
 
     }
 

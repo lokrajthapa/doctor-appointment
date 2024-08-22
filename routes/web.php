@@ -24,17 +24,12 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('patients', PatientController::class);
     Route::resource('doctors', DoctorController::class);
-
-
-
     Route::resource('appointments', AppointmentController::class);
 
     //for appointment booking
     Route::get('doctorsToAppointment/{id}',[AppointmentController::class,'bookAppointment'])->name('doctor.to.appointment');
     Route::resource('schedules', ScheduleController::class);
     Route::resource('departments', DepartmentController::class);
-
-
     //for search
     Route::get('/search',[AppointmentController::class,'search']);
 
