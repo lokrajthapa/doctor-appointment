@@ -34,11 +34,8 @@ class AppointmentController extends Controller
 
     {
 
-<<<<<<< HEAD
 
-=======
-        // dd('you are here with doctor id'.$id); //remove diedump
->>>>>>> a1411514f5edfb8b97f1dd7d5086c422d984d6fd
+
         $user=Auth::user();
 
         if($this->user->user_type==='doctor')
@@ -78,14 +75,9 @@ class AppointmentController extends Controller
 
 
         $appointment=Appointment::create($request->all());
-<<<<<<< HEAD
         $doctor_email=$appointment->doctor->user->email;
 
-=======
-        //$doctor_email=$appointment->doctor->user->email;
-//TODO: remove unused code
->>>>>>> a1411514f5edfb8b97f1dd7d5086c422d984d6fd
-   //mail for patient conformation
+
       Mail::to(Auth::user())->queue(new AppointmentScheduledEmail($appointment));
 
     //mail for doctor
