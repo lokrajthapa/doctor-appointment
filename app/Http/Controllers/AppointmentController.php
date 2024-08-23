@@ -12,6 +12,7 @@ use App\Http\Requests\UpdateAppointmentRequest;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use App\Mail\AppointmentScheduledEmail;
 use App\Models\Department;
+use App\services\AppointmentByRoleService;
 use App\services\AppointmentSearchService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -34,22 +35,8 @@ class AppointmentController extends Controller
 
     {
 
-
-
-        $user=Auth::user();
-
-        if($this->user->user_type==='doctor')
-
-          $appointments =  $this->user->doctor->appointments;
-
-        else if(Auth::user()->user_type==='patient')
-        {
-            $appointments = $this->user->patient->appointments;
-        }
-        else
-        {
-            $appointments = Appointment::with(['patient', 'doctor'])->get();
-        }
+        $appointments= new AppointmentByRoleService();
+        $appointments->appointmentIndex();
 
         return view('appointments.index', compact('appointments'));
     }
@@ -137,13 +124,12 @@ class AppointmentController extends Controller
 
     public function search(Request $request)
     {
-//TODO:  make this search functionality inside index
+
         $request->validate([
             'date'=>'required | date',
         ]);
 
       $appointments = new AppointmentSearchService();
-
       $appointments->searchAppointment($request);
       return view('appointments.index', compact('appointments'));
 
