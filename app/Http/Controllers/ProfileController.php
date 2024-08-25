@@ -30,15 +30,14 @@ class ProfileController extends Controller
         $user = $request->user();
 
         $user->fill($request->all());
-//TODO: remove comments and also make the logical part in seperate service class
-        // Handle the image upload if a new image is provided
+
         if ($request->hasFile('image')) {
 
-            // Store the new image and get the file name
+
             $path = $request->file('image')->store('profile_images', 'public');
             $filename = basename($path);
 
-            // Delete the old image if it exists
+
             if ($user->image) {
                 Storage::disk('public')->delete('profile_images/' . $user->image);
             }
@@ -46,7 +45,7 @@ class ProfileController extends Controller
             // Update the user's image with just the filename
             $user->image = $filename;
         }
-        // Fill the user's other fields with validated data
+
 
 
 

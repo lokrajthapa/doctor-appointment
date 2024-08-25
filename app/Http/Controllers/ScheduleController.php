@@ -6,16 +6,19 @@ use App\Http\Requests\StoreScheduleRequest;
 use Illuminate\Http\Request;
 use App\Models\Schedule;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\JsonResponse;
+
 
 class ScheduleController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): JsonResponse
     {
         $schedules = Auth::user()->doctor->schedules;
-        return view('schedules.index',compact('schedules'));
+        return response()->json($schedules);
+
 
     }
 
@@ -30,11 +33,11 @@ class ScheduleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreScheduleRequest $request)
+    public function store(StoreScheduleRequest $request) : JsonResponse
     {
 
       Schedule::create($request->all());
-      return redirect()->route('schedules.index')->with('success', 'Schedule created successfully!');
+     return response()->json(['message'=>"Schedule created successfully"],201);
     }
 
     /**
@@ -48,29 +51,29 @@ class ScheduleController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Schedule $schedule)
+    public function edit(Schedule $schedule) : JsonResponse
     {
-       return view('schedules.edit',compact('schedule'));
+       return response()->json($schedule);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Schedule $schedule)
+    public function update(Request $request, Schedule $schedule): JsonResponse
     {
 
       $schedule->update($request->all());
 
-      return redirect()->route('schedules.index')->with('success', 'Schedule updated successfully.');
+       return response()->json(['message'=>"Schedule updated successfully"],201);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Schedule $schedule)
+    public function destroy(Schedule $schedule): JsonResponse
     {
         $schedule->delete();
 
-        return redirect()->route('schedules.index')->with('success', 'Schedule deleted successfully.');
+       return response()->json(['message'=>"Schedule deleted successfuly"],200);
     }
 }

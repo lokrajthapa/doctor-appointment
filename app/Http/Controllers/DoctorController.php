@@ -7,6 +7,8 @@ use App\Http\Requests\StoreDoctorRequest;
 use App\Http\Requests\UpdateDoctorRequest;
 use App\Models\Department;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\JsonResponse;
+
 
 
 
@@ -16,59 +18,59 @@ class DoctorController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): JsonResponse
     {
         $doctors = Doctor::with(['user', 'department'])->get();
-        return view('doctors.index', compact('doctors'));
+       return response()->json( $doctors,200);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create():  JsonResponse
     {
         $departments=Department::all();
 
-        return view('doctors.create',compact('departments'));
+         return response()->json( $departments,200);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreDoctorRequest $request)
+    public function store(StoreDoctorRequest $request): JsonResponse
     {
          Doctor::create($request->all());
-        return redirect(route('dashboard', absolute: false));
+         return response()->json( "Doctor created successfully",201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Doctor $doctor)
+    public function show(Doctor $doctor): JsonResponse
     {
-        return view('doctors.show', compact('doctor'));
+        return response()->json( $doctor,200);
     }
+
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Doctor $doctor)
+    public function edit(Doctor $doctor): JsonResponse
     {
 
         $this->authorize('edit', $doctor);
 
-        return view('doctors.edit', compact('doctor'));
+        return response()->json($doctor, 200);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateDoctorRequest $request, Doctor $doctor)
+    public function update(UpdateDoctorRequest $request, Doctor $doctor): JsonResponse
     {
         $this->authorize('update', $doctor);
         $doctor->update($request->all());
-
-        return redirect()->route('dashboard')->with('success', 'Doctor updated successfully.');
+        return response()->json("Doctor successfully updated", 201);
     }
 
     /**
@@ -78,7 +80,6 @@ class DoctorController extends Controller
     {
         $this->authorize('delete', $doctor);
         $doctor->delete();
-
-        return redirect()->route('doctors.index')->with('success', 'Doctor deleted successfully.');
+        return response()->json("Doctor deleted successfully ", 200);
     }
 }

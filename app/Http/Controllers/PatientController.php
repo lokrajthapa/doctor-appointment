@@ -6,6 +6,8 @@ use App\Models\Patient;
 use App\Http\Requests\StorePatientRequest;
 use App\Http\Requests\UpdatePatientRequest;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\JsonResponse;
+
 
 
 
@@ -15,11 +17,11 @@ class PatientController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index():JsonResponse
     {
-        $patients = Patient::with('user')->get(); // Retrieve all patients with associated user
-        //remove comments
-        return view('patients.index', compact('patients'));
+        $patients = Patient::with('user')->get();
+
+        return response()->json($patients,200 );
     }
 
     /**
@@ -33,21 +35,20 @@ class PatientController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StorePatientRequest $request)
+    public function store(StorePatientRequest $request):JsonResponse
     {
         Patient::create($request->all());
-
-        return redirect(route('dashboard', absolute: false));
-
+        return response()->json("patient created successfuly",200 );
 
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Patient $patient)
+    public function show(Patient $patient): JsonResponse
     {
-        return view('patients.create');
+        return response()->json($patient);
+
     }
 
     /**
@@ -56,27 +57,29 @@ class PatientController extends Controller
     public function edit(Patient $patient)
     {
         $this->authorize('edit', $patient);
-        return view('patients.edit', compact('patient'));
+
+          return response()->json($patient);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatePatientRequest $request, Patient $patient)
+    public function update(UpdatePatientRequest $request, Patient $patient): JsonResponse
     {
         $this->authorize('edit', $patient);
         $patient->update($request->all());
-         return redirect()->route('dashboard')->with('success', 'Patient updated successfully.');
+
+        return response()->json(["message"=>"patient updated successfuly"],200 );
+
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Patient $patient)
+    public function destroy(Patient $patient):JsonResponse
     {
-        $this->authorize('edit', $patient);
+        $this->authorize('delete', $patient);
         $patient->delete();
-
-        return redirect()->route('patients.index')->with('success', 'Patient deleted successfully.');
+        return response()->json(["message"=>"Patient deleted successfully"],200);
     }
 }

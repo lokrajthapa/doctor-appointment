@@ -14,6 +14,7 @@ use App\Mail\AppointmentScheduledEmail;
 use App\Models\Department;
 use App\services\AppointmentByRoleService;
 use App\services\AppointmentSearchService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -31,14 +32,16 @@ class AppointmentController extends Controller
       $this->user=Auth::user();
    }
 
-    public function index()
+    public function index():JsonResponse
 
     {
 
         $appointments= new AppointmentByRoleService();
         $appointments->appointmentIndex();
 
-        return view('appointments.index', compact('appointments'));
+        return response()->json($appointments,200);
+
+
     }
 
     /**
@@ -47,9 +50,7 @@ class AppointmentController extends Controller
     public function create()
     {
 
-        $departments=Department::with(['doctors','doctors.user','doctors.schedules'])->get()->toArray();
-
-        return view('appointments.create', compact('departments'));
+       // not done anything
 
 
     }
@@ -57,7 +58,7 @@ class AppointmentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreAppointmentRequest $request)
+    public function store(StoreAppointmentRequest $request):JsonResponse
     {
 
 
@@ -69,60 +70,59 @@ class AppointmentController extends Controller
 
     //mail for doctor
         Mail::to($doctor_email)->queue(new AppointmentScheduledEmail($appointment));
-
-        return redirect()->route('appointments.index')->with('success', 'Appointment created successfully.');
+        return response()->json("Appointment created successfully ", 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Appointment $appointment)
+    public function show(Appointment $appointment):JsonResponse
     {
         $appointment = Appointment::with(['patient', 'doctor'])->findOrFail($appointment);
-        return view('appointments.show', compact('appointment'));
+        return response()->json($appointment);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($id)
+    public function edit($id):JsonResponse
     {
 
         $appointment = Appointment::findOrFail($id);
 
         $this->authorize('edit', $appointment);
 
-        return view('appointments.edit', compact('appointment'));
+        return response()->json($appointment);
+
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateAppointmentRequest $request, $id)
+    public function update(UpdateAppointmentRequest $request, $id):JsonResponse
     {
 
         $appointment = Appointment::findOrFail($id);
         $this->authorize('update', $appointment);
 
         $appointment->update($request->all());
-        return redirect()->route('appointments.index')->with('success', 'Appointment updated successfully.');
+        return response()->json(["message"=>"Doctor deleted successfully "], 201);
+
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Appointment $appointment)
+    public function destroy(Appointment $appointment):JsonResponse
     {
 
         $appointment = Appointment::findOrFail($appointment->id);
         $this->authorize('delete', $appointment);
-
         $appointment->delete();
-
-        return redirect()->route('appointments.index')->with('success', 'Appointment deleted successfully.');
+        return response()->json("Appointment deleted successfully ", 200);
     }
 
-    public function search(Request $request)
+    public function search(Request $request):JsonResponse
     {
 
         $request->validate([
@@ -131,14 +131,14 @@ class AppointmentController extends Controller
 
       $appointments = new AppointmentSearchService();
       $appointments->searchAppointment($request);
-      return view('appointments.index', compact('appointments'));
+      return response()->json($appointments, 200);
 
     }
 
-    public function bookAppointment($id)
+    public function bookAppointment($id):JsonResponse
     {
         $doctor=Doctor::with(['schedules'])->findorfail($id);
 
-         return view('appointments.create', compact('doctor'));
+        return response()->json($doctor, 200);
     }
 }

@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -27,7 +28,7 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request):  JsonResponse
     {
 
 
@@ -47,25 +48,11 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-
-        Auth::login($user);
-
-     if($user->user_type == 'patient')
-     {
-        return redirect(route('patients.create', absolute: false));
-
-     }
-     else if($user->user_type == 'doctor')
-     {
-
-        return redirect(route('doctors.create', absolute: false));
-     }
-     else
-     {
-        return redirect(route('dashboard', absolute: false));
-     }
-
-
+        $data=[
+            "user"=>$user,
+            "message"=>"you are logged In successfully",
+        ];
+        return response()->json($data,201);
 
     }
 }
