@@ -6,6 +6,7 @@ use App\Http\Requests\StoreScheduleRequest;
 use Illuminate\Http\Request;
 use App\Models\Schedule;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\ScheduleResource;
 use Illuminate\Http\JsonResponse;
 
 
@@ -14,10 +15,10 @@ class ScheduleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): JsonResponse
+    public function index()
     {
         $schedules = Auth::user()->doctor->schedules;
-        return response()->json($schedules);
+        return  ScheduleResource::collection($schedules);
 
 
     }
@@ -33,38 +34,40 @@ class ScheduleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreScheduleRequest $request) : JsonResponse
+    public function store(StoreScheduleRequest $request)
     {
 
-      Schedule::create($request->all());
-     return response()->json(['message'=>"Schedule created successfully"],201);
+      $schedules = Schedule::create($request->all());
+
+      return new ScheduleResource($schedules);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Schedule $schedule)
     {
-        //
+        return new ScheduleResource($schedule);
+
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Schedule $schedule) : JsonResponse
+    public function edit(Schedule $schedule)
     {
-       return response()->json($schedule);
+        return new ScheduleResource($schedule);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Schedule $schedule): JsonResponse
+    public function update(Request $request, Schedule $schedule)
     {
 
       $schedule->update($request->all());
 
-       return response()->json(['message'=>"Schedule updated successfully"],201);
+      return new ScheduleResource($schedule);
     }
 
     /**

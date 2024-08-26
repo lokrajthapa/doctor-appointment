@@ -16,6 +16,7 @@ class Doctor extends Model
         'department_id',
         'bio',
         'address',
+
     ];
 
     public function user():BelongsTo
