@@ -128,7 +128,13 @@ class ScheduleController extends Controller
      *     description="Store a newly created schedule in the database.",
      *     @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(ref="#/components/schemas/StoreScheduleRequest")
+     *         @OA\JsonContent(
+     *              required={"doctor_id", "date", "start_time", "end_time"},
+     *             @OA\Property(property="doctor_id", type="integer", example=1, description="ID of the doctor"),
+     *             @OA\Property(property="date", type="string", format="date", example="2024-08-26", description="Date of the schedule"),
+     *             @OA\Property(property="start_time", type="string", format="time", example="09:00", description="Start time of the schedule"),
+     *             @OA\Property(property="end_time", type="string", format="time", example="12:00", description="End time of the schedule"),
+     *           )
      *     ),
      *     @OA\Response(
      *         response=201,

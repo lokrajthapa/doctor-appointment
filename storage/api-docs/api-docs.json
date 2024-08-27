@@ -44,7 +44,38 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/StoreScheduleRequest"
+                                "required": [
+                                    "doctor_id",
+                                    "date",
+                                    "start_time",
+                                    "end_time"
+                                ],
+                                "properties": {
+                                    "doctor_id": {
+                                        "description": "ID of the doctor",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "date": {
+                                        "description": "Date of the schedule",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-08-26"
+                                    },
+                                    "start_time": {
+                                        "description": "Start time of the schedule",
+                                        "type": "string",
+                                        "format": "time",
+                                        "example": "09:00"
+                                    },
+                                    "end_time": {
+                                        "description": "End time of the schedule",
+                                        "type": "string",
+                                        "format": "time",
+                                        "example": "12:00"
+                                    }
+                                },
+                                "type": "object"
                             }
                         }
                     }

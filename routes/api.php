@@ -14,17 +14,14 @@ Route::get('/user', function (Request $request) {
 
 Route::middleware('auth:sanctum')->group(function () {
 
-
-    Route::resource('patients', PatientController::class);
-    Route::resource('doctors', DoctorController::class);
-    Route::resource('appointments', AppointmentController::class);
-
-    //for appointment booking
-    Route::get('doctorsToAppointment/{id}',[AppointmentController::class,'bookAppointment'])->name('doctor.to.appointment');
-    Route::resource('schedules', ScheduleController::class);
-    Route::resource('departments', DepartmentController::class);
-    //for search
-    Route::get('/search',[AppointmentController::class,'search']);
+ Route::apiResource('patients', PatientController::class);
+ Route::apiResource('doctors', DoctorController::class);
+ Route::apiResource('appointments', AppointmentController::class);
+ Route::get('doctorsToAppointment/{id}', [AppointmentController::class, 'bookAppointment'])
+     ->name('doctor.to.appointment');
+ Route::apiResource('schedules', ScheduleController::class);
+ Route::apiResource('departments', DepartmentController::class);
+ Route::get('/search', [AppointmentController::class, 'search']);
 
 });
 
