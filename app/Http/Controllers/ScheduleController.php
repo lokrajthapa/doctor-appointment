@@ -9,36 +9,105 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\ScheduleResource;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * @OA\Info(
+ *    title="Laravel v11 API",
+ *    version="1.0.0"
+ * )
+ *
+ * @OA\Schema(
+ *     schema="Schedule",
+ *     type="object",
+ *     title="Schedule",
+ *     description="A schedule model",
+ *     required={"id","doctor_id","date","start_time","end_time"},
+ *     @OA\Property(
+ *         property="id",
+ *         type="integer",
+ *         description="The unique identifier of the schedule"
+ *     ),
+ *     @OA\Property(
+ *         property="doctor_id",
+ *         type="integer",
+ *         description="The ID of the doctor associated with the schedule"
+ *     ),
+ *     @OA\Property(
+ *         property="date",
+ *         type="string",
+ *         format="date",
+ *         description="The date of the schedule"
+ *     ),
+ *     @OA\Property(
+ *         property="start_time",
+ *         type="string",
+ *         format="time",
+ *         description="The start time of the schedule"
+ *     ),
+ *      @OA\Property(
+ *         property="end_time",
+ *         type="string",
+ *         format="time",
+ *         description="The end time of the schedule"
+ *     )
+ * )
+ *
+ *  @OA\Schema(
+ *     schema="StoreScheduleRequest",
+ *     type="object",
+ *     title="Store Schedule Request",
+ *     description="Schema for storing a schedule",
+ *     required={"doctor_id", "date", "start_time", "end_time"},
+ *     @OA\Property(
+ *         property="doctor_id",
+ *         type="integer",
+ *         description="The ID of the doctor associated with the schedule"
+ *     ),
+ *     @OA\Property(
+ *         property="date",
+ *         type="string",
+ *         format="date",
+ *         description="The date of the schedule"
+ *     ),
+ *     @OA\Property(
+ *         property="start_time",
+ *         type="string",
+ *         format="time",
+ *         description="The start time of the schedule"
+ *     ),
+ *     @OA\Property(
+ *         property="end_time",
+ *         type="string",
+ *         format="time",
+ *         description="The end time of the schedule"
+ *     )
+ * )
+ */
 
-/*
-*@OA\Info(
-*    "title"=" laravel v11 API "
-*     "version"="1.0.0"
-*   )
-*
-*
-*
-*
-*/
+
 
 
 class ScheduleController extends Controller
 {
-   //GET
-   /*
-    *@OA\get(
-    *  path="/api/schedules",
-    *  tags={index},
-    *  summary="Register API",
-    *   description="you can see all the Schedule from here",
-    *            @OA\RequestBody(     )
-    *      )
-    *@OA\Response(
-    *    response=201,
-    *    description="View all the schedules",
-    *     @OA\JsonResource()
-    *  )
-    */
+   /**
+     * @OA\Get(
+     *     path="/api/schedules",
+     *     tags={"Schedules"},
+     *     summary="Get all schedules",
+     *     description="Retrieve a list of all schedules associated with the authenticated doctor.",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Schedule")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized"
+     *     )
+     * )
+     */
 
     public function index()
     {
@@ -48,16 +117,29 @@ class ScheduleController extends Controller
 
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return view('schedules.create');
-    }
 
-    /**
-     * Store a newly created resource in storage.
+
+
+   /**
+     * @OA\Post(
+     *     path="/api/schedules",
+     *     tags={"Schedules"},
+     *     summary="Create a new schedule",
+     *     description="Store a newly created schedule in the database.",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/StoreScheduleRequest")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Schedule created successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/Schedule")
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad request"
+     *     )
+     * )
      */
     public function store(StoreScheduleRequest $request)
     {
@@ -67,8 +149,28 @@ class ScheduleController extends Controller
       return new ScheduleResource($schedules);
     }
 
-    /**
-     * Display the specified resource.
+        /**
+     * @OA\Get(
+     *     path="/api/schedules/{id}",
+     *     tags={"Schedules"},
+     *     summary="Get a specific schedule",
+     *     description="Retrieve a specific schedule by its ID.",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/Schedule")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Schedule not found"
+     *     )
+     * )
      */
     public function show(Schedule $schedule)
     {
@@ -85,7 +187,35 @@ class ScheduleController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * @OA\Put(
+     *     path="/api/schedules/{id}",
+     *     tags={"Schedules"},
+     *     summary="Update a specific schedule",
+     *     description="Update the details of an existing schedule.",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/Schedule")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Schedule updated successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/Schedule")
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad request"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Schedule not found"
+     *     )
+     * )
      */
     public function update(Request $request, Schedule $schedule)
     {
@@ -95,8 +225,31 @@ class ScheduleController extends Controller
       return new ScheduleResource($schedule);
     }
 
-    /**
-     * Remove the specified resource from storage.
+      /**
+     * @OA\Delete(
+     *     path="/api/schedules/{id}",
+     *     tags={"Schedules"},
+     *     summary="Delete a specific schedule",
+     *     description="Delete a schedule by its ID.",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Schedule deleted successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Schedule deleted successfully")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Schedule not found"
+     *     )
+     * )
      */
     public function destroy(Schedule $schedule): JsonResponse
     {

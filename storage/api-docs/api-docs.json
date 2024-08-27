@@ -1,0 +1,269 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Laravel v11 API",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/schedules": {
+            "get": {
+                "tags": [
+                    "Schedules"
+                ],
+                "summary": "Get all schedules",
+                "description": "Retrieve a list of all schedules associated with the authenticated doctor.",
+                "operationId": "c2791edf6c0550c67fac652cad98e09e",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Schedule"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Schedules"
+                ],
+                "summary": "Create a new schedule",
+                "description": "Store a newly created schedule in the database.",
+                "operationId": "cec681726db3f091faae4410db8ee14c",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreScheduleRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Schedule created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Schedule"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                }
+            }
+        },
+        "/api/schedules/{id}": {
+            "get": {
+                "tags": [
+                    "Schedules"
+                ],
+                "summary": "Get a specific schedule",
+                "description": "Retrieve a specific schedule by its ID.",
+                "operationId": "da250e6293de88a6bb2201d3d53ebe82",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Schedule"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Schedule not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Schedules"
+                ],
+                "summary": "Update a specific schedule",
+                "description": "Update the details of an existing schedule.",
+                "operationId": "4c279651026a64cbbce8be66901a368a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Schedule"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Schedule updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Schedule"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Schedule not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Schedules"
+                ],
+                "summary": "Delete a specific schedule",
+                "description": "Delete a schedule by its ID.",
+                "operationId": "0c464af4e687525872f4eb274eac5d7c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Schedule deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Schedule deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Schedule not found"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Schedule": {
+                "title": "Schedule",
+                "description": "A schedule model",
+                "required": [
+                    "id",
+                    "doctor_id",
+                    "date",
+                    "start_time",
+                    "end_time"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "The unique identifier of the schedule",
+                        "type": "integer"
+                    },
+                    "doctor_id": {
+                        "description": "The ID of the doctor associated with the schedule",
+                        "type": "integer"
+                    },
+                    "date": {
+                        "description": "The date of the schedule",
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "start_time": {
+                        "description": "The start time of the schedule",
+                        "type": "string",
+                        "format": "time"
+                    },
+                    "end_time": {
+                        "description": "The end time of the schedule",
+                        "type": "string",
+                        "format": "time"
+                    }
+                },
+                "type": "object"
+            },
+            "StoreScheduleRequest": {
+                "title": "Store Schedule Request",
+                "description": "Schema for storing a schedule",
+                "required": [
+                    "doctor_id",
+                    "date",
+                    "start_time",
+                    "end_time"
+                ],
+                "properties": {
+                    "doctor_id": {
+                        "description": "The ID of the doctor associated with the schedule",
+                        "type": "integer"
+                    },
+                    "date": {
+                        "description": "The date of the schedule",
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "start_time": {
+                        "description": "The start time of the schedule",
+                        "type": "string",
+                        "format": "time"
+                    },
+                    "end_time": {
+                        "description": "The end time of the schedule",
+                        "type": "string",
+                        "format": "time"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Schedules",
+            "description": "Schedules"
+        }
+    ]
+}
