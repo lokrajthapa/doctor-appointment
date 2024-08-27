@@ -27,9 +27,7 @@ class Schedule extends Model
 
    public function getDateFormatAttribute()
    {
-
       return Carbon::parse($this->date)->format('l, F j');
-
 
    }
 

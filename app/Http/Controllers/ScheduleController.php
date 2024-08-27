@@ -10,11 +10,36 @@ use App\Http\Resources\ScheduleResource;
 use Illuminate\Http\JsonResponse;
 
 
+/*
+*@OA\Info(
+*    "title"=" laravel v11 API "
+*     "version"="1.0.0"
+*   )
+*
+*
+*
+*
+*/
+
+
 class ScheduleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+   //GET
+   /*
+    *@OA\get(
+    *  path="/api/schedules",
+    *  tags={index},
+    *  summary="Register API",
+    *   description="you can see all the Schedule from here",
+    *            @OA\RequestBody(     )
+    *      )
+    *@OA\Response(
+    *    response=201,
+    *    description="View all the schedules",
+    *     @OA\JsonResource()
+    *  )
+    */
+
     public function index()
     {
         $schedules = Auth::user()->doctor->schedules;
