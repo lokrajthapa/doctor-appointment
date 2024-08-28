@@ -17,9 +17,9 @@ class ScheduleResource extends JsonResource
        return [
             'id' => $this->id,
             'doctor_id' => $this->doctor_id,
-            'date' => $this->date->format('Y-m-d'),
-            'start_time' => $this->start_time->format('H:i'),
-            'end_time' => $this->end_time->format('H:i'),
+            'date' => $this->date,
+            'start_time' => $this->start_time,
+            'end_time' => $this->end_time,
             'created_at' => $this->created_at->toDateTimeString(),
             'updated_at' => $this->updated_at->toDateTimeString(),
         ];

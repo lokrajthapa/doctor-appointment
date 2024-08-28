@@ -18,7 +18,6 @@ return new class extends Migration
             $table->unsignedBigInteger('doctor_id');
             $table->foreign('doctor_id')->references('id')->on('doctors');
             $table->date('appointment_time');
-            $table->string('department_name');
             $table->text('reason');
             $table->timestamps();
         });

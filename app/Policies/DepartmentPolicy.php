@@ -27,12 +27,13 @@ class DepartmentPolicy
      */
     public function create(User $user): bool
     {
-       return $user->user_type==='admin';
+       return true;
     }
 
     public function edit(User $user): bool
     {
-        return $user->user_type==='admin';
+        // return $user->user_type==='admin';
+        return true;
 
     }
 
@@ -41,7 +42,7 @@ class DepartmentPolicy
      */
     public function update(User $user): bool
     {
-        return $user->user_type==='admin';
+        return true;
 
     }
 
@@ -50,7 +51,8 @@ class DepartmentPolicy
      */
     public function delete(User $user): bool
     {
-        return $user->user_type==='admin';
+        // return $user->user_type==='admin';
+        return true;
     }
 
     /**

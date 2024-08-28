@@ -21,56 +21,61 @@ class AppointmentPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(Doctor $doctor, Appointment $appointment): bool
+    public function view(): bool
     {
-        return $doctor->id === $appointment->doctor_id;
+        return true;
+        // return $doctor->id === $appointment->doctor_id;
     }
 
     /**
      * Determine whether the user can create models.
      */
-    public function create(Doctor $doctor, Appointment $appointment): bool
+    public function create( ): bool
     {
-        return $doctor->id === $appointment->doctor_id;
+        return true;
+        // return $doctor->id === $appointment->doctor_id;
     }
 
     /**
      * Determine whether the Doctor can update the model.
      */
-    public function edit(User $user, Appointment $appointment): bool
+    public function edit(): bool
     {
-        return $user->doctor->id=== $appointment->doctor_id;
+        return true;
+        // return $user->doctor->id=== $appointment->doctor_id;
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Appointment $appointment): bool
+    public function update(): bool
     {
-        return $user->doctor->id=== $appointment->doctor_id;
+        return true;
+        // return $user->doctor->id=== $appointment->doctor_id;
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Appointment $appointment): bool
+    public function delete( ): bool
     {
-        return $user->doctor->id === $appointment->doctor_id;
+        return true;
+        // return $user->doctor->id === $appointment->doctor_id;
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Appointment $appointment): bool
+    public function restore( ): bool
     {
-        //
+        return true;
     }
 
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Appointment $appointment): bool
+    public function forceDelete( Appointment $appointment): bool
     {
-        //
+        return true;
     }
 }

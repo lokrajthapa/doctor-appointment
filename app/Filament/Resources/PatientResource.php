@@ -2,11 +2,12 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\DoctorResource\Pages;
-use App\Filament\Resources\DoctorResource\RelationManagers;
-use App\Models\Doctor;
+use App\Filament\Resources\PatientResource\Pages;
+use App\Filament\Resources\PatientResource\RelationManagers;
+use App\Models\Patient;
 use App\Models\User;
 use Filament\Forms;
+// use Filament\Forms\Components\Section;
 use Filament\Infolists\Components\Section;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\TextEntry;
@@ -18,28 +19,35 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class DoctorResource extends Resource
+class PatientResource extends Resource
 {
-    protected static ?string $model = Doctor::class;
+    protected static ?string $model = Patient::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-eye-dropper';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\Select::make('user_id')
-                ->options(User::where('user_type', 'doctor')->pluck('name', 'id'))->label('User')
+                    ->options(User::where('user_type', 'patient')->pluck('name', 'id'))->label('User')
                     ->required(),
-                Forms\Components\Select::make('department_id')
-                    ->relationship('department', 'name')
+                Forms\Components\DatePicker::make('dob')
                     ->required(),
-                Forms\Components\Textarea::make('bio')
-                    ->required()
-                    ->columnSpanFull(),
-                Forms\Components\TextInput::make('address')
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\Select::make('gender')
+                ->label('Gender')
+                ->options([
+                    'male' => 'Male',
+                    'female' => 'Female',
+                    'other' => 'Other',
+                ])
+                ->required()
+                ->placeholder('Select Gender')
+                ->default('male'),
+                Forms\Components\TextInput::make('phone')
+                    ->tel()
+                    ->maxLength(255)
+                    ->default(null),
             ]);
     }
 
@@ -50,10 +58,11 @@ class DoctorResource extends Resource
                 Tables\Columns\TextColumn::make('user.name')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('department.name')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('dob')
+                    ->date()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('address')
+                Tables\Columns\TextColumn::make('gender'),
+                Tables\Columns\TextColumn::make('phone')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -78,17 +87,11 @@ class DoctorResource extends Resource
             ]);
     }
 
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
     public static function infolist(Infolist $infolist): Infolist
     {
         return $infolist
             ->schema([
-                Section::make('Doctor Details')
+                Section::make('Patient Details')
                     ->columns([
                         'sm' => 1,
                         'xl' => 2,
@@ -100,18 +103,18 @@ class DoctorResource extends Resource
                             ->icon('heroicon-m-user')
                             ->fontFamily(FontFamily::Mono)
                             ->iconColor('primary'),
-                        TextEntry::make('department.name')
-                            ->label('Department Name')
+                        TextEntry::make('dob')
+                            ->label('Date of Birth')
                             ->icon('heroicon-m-calendar')
                             ->iconColor('primary'),
-                        TextEntry::make('address')
-                            ->label('Address')
+                        TextEntry::make('gender')
+                            ->label('Gender')
                             ->icon('heroicon-m-question-mark-circle')
                             ->iconColor('primary'),
-                        TextEntry::make('bio')
-                            ->label('Bio')
-                            ->icon('heroicon-m-clipboard-document-list')
-                            ->iconColor('primary'),
+                        // ImageEntry::make('header_image')
+                        //     ->label('Image')
+                        //     ->image()
+                        //     ->responsive(),
                         TextEntry::make('created_at')
                             ->label('Created At')
                             ->icon('heroicon-m-calendar')
@@ -124,13 +127,20 @@ class DoctorResource extends Resource
             ]);
         }
 
+    public static function getRelations(): array
+    {
+        return [
+            //
+        ];
+    }
+
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListDoctors::route('/'),
-            'create' => Pages\CreateDoctor::route('/create'),
-            'view' => Pages\ViewDoctor::route('/{record}'),
-            'edit' => Pages\EditDoctor::route('/{record}/edit'),
+            'index' => Pages\ListPatients::route('/'),
+            'create' => Pages\CreatePatient::route('/create'),
+            'view' => Pages\ViewPatient::route('/{record}'),
+            'edit' => Pages\EditPatient::route('/{record}/edit'),
         ];
     }
 }

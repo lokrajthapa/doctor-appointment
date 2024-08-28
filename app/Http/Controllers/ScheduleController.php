@@ -15,6 +15,13 @@ use Illuminate\Http\JsonResponse;
  *    version="1.0.0"
  * )
  *
+ * * @OA\SecurityScheme(
+ *     securityScheme="bearerAuth",
+ *     type="http",
+ *     scheme="bearer",
+ *     bearerFormat="JWT",
+ *     description="Enter your bearer token in the format: `Bearer {token}`"
+ * )
  * @OA\Schema(
  *     schema="Schedule",
  *     type="object",
@@ -88,7 +95,7 @@ use Illuminate\Http\JsonResponse;
 
 class ScheduleController extends Controller
 {
-   /**
+    /**
      * @OA\Get(
      *     path="/api/schedules",
      *     tags={"Schedules"},
@@ -113,19 +120,19 @@ class ScheduleController extends Controller
     {
         $schedules = Auth::user()->doctor->schedules;
         return  ScheduleResource::collection($schedules);
-
-
     }
 
 
 
 
-   /**
+    /**
      * @OA\Post(
      *     path="/api/schedules",
      *     tags={"Schedules"},
+     *     security={{ "bearerAuth":{}}},
      *     summary="Create a new schedule",
      *     description="Store a newly created schedule in the database.",
+     *
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -150,12 +157,12 @@ class ScheduleController extends Controller
     public function store(StoreScheduleRequest $request)
     {
 
-      $schedules = Schedule::create($request->all());
+        $schedules = Schedule::create($request->all());
 
-      return new ScheduleResource($schedules);
+        return new ScheduleResource($schedules);
     }
 
-        /**
+    /**
      * @OA\Get(
      *     path="/api/schedules/{id}",
      *     tags={"Schedules"},
@@ -181,7 +188,6 @@ class ScheduleController extends Controller
     public function show(Schedule $schedule)
     {
         return new ScheduleResource($schedule);
-
     }
 
     /**
@@ -226,12 +232,12 @@ class ScheduleController extends Controller
     public function update(Request $request, Schedule $schedule)
     {
 
-      $schedule->update($request->all());
+        $schedule->update($request->all());
 
-      return new ScheduleResource($schedule);
+        return new ScheduleResource($schedule);
     }
 
-      /**
+    /**
      * @OA\Delete(
      *     path="/api/schedules/{id}",
      *     tags={"Schedules"},
@@ -261,6 +267,6 @@ class ScheduleController extends Controller
     {
         $schedule->delete();
 
-       return response()->json(['message'=>"Schedule deleted successfuly"],200);
+        return response()->json(['message' => "Schedule deleted successfuly"], 200);
     }
 }

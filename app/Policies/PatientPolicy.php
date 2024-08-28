@@ -19,7 +19,7 @@ class PatientPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Patient $patient): bool
+    public function view(User $user): bool
     {
         return true;
     }
@@ -27,9 +27,10 @@ class PatientPolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user, Patient $patient): bool
+    public function create(User $user): bool
     {
-        return $user->id === $patient->user_id;
+        // return $user->id === $patient->user_id;
+        return true;
 
     }
 
@@ -38,7 +39,8 @@ class PatientPolicy
      */
     public function update(User $user, Patient $patient): bool
     {
-        return $user->id === $patient->user_id;
+        // return $user->id === $patient->user_id;
+        return true;
     }
 
     /**
@@ -46,7 +48,8 @@ class PatientPolicy
      */
     public function delete(User $user, Patient $patient): bool
     {
-        return $user->id === $patient->user_id;
+        // return $user->id === $patient->user_id;
+        return true;
     }
 
     /**
