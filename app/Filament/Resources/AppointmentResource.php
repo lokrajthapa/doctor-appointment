@@ -10,10 +10,13 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use App\Models\Patient;
+use App\Models\User;
 use Filament\Tables;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class AppointmentResource extends Resource
 {
@@ -25,7 +28,7 @@ class AppointmentResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('patient_id')
+                Forms\Components\Select::make('patient_id')->hidden(fn() => auth()->user()->user_type === 'patient')
                 ->label('Patient')
                 ->options(function () {
                     return Patient::with('user')
@@ -59,7 +62,25 @@ class AppointmentResource extends Resource
 
     public static function table(Table $table): Table
     {
+        $userId = Auth::user()->id;
         return $table
+        ->modifyQueryUsing(function (Builder $query) use ($userId) {
+            if (auth()->user()->user_type === 'admin') {
+                return;
+            }
+            if (auth()->user()->user_type === 'patient') {
+                // Patient sees only their own appointments
+                $query->whereHas('patient', function (Builder $query) use ($userId) {
+                    $query->where('user_id', $userId);
+                });
+            }
+            if (auth()->user()->user_type === 'doctor') {
+                // Doctor sees only their own appointments
+                $query->whereHas('doctor', function (Builder $query) use ($userId) {
+                    $query->where('user_id', $userId);
+                });
+            }
+        })
             ->columns([
                 Tables\Columns\TextColumn::make('patient.user.name')->label('Patient')
                     ->numeric()
@@ -80,7 +101,18 @@ class AppointmentResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('doctor_id')
+                    ->label('Doctor')
+                    ->options(function () {
+                        return Doctor::query()
+                            ->with('user')
+                            ->get()
+                            ->pluck('user.name', 'id')
+                            ->filter(function ($name) {
+                                return !is_null($name);
+                            })
+                            ->toArray();
+                    }),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

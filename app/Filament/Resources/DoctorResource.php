@@ -86,7 +86,7 @@ class DoctorResource extends Resource
     }
     public static function infolist(Infolist $infolist): Infolist
     {
-        return $infolist
+           return $infolist
             ->schema([
                 Section::make('Doctor Details')
                     ->columns([
@@ -122,7 +122,7 @@ class DoctorResource extends Resource
                             ->iconColor('primary'),
                     ])
             ]);
-        }
+    }
 
     public static function getPages(): array
     {

@@ -30,10 +30,9 @@ class AppointmentPolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create( ): bool
+    public function create(User $user): bool
     {
-        return true;
-        // return $doctor->id === $appointment->doctor_id;
+       return $user->isAdmin()|| $user->isPatient();
     }
 
     /**

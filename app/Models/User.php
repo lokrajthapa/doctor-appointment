@@ -60,4 +60,17 @@ class User extends Authenticatable
     {
        return $this->hasOne(Doctor::class);
     }
+
+    public function isAdmin()
+    {
+       return $this->user_type === 'admin';
+    }
+    public function isDoctor()
+    {
+       return $this->user_type === 'doctor';
+    }
+    public function isPatient()
+    {
+       return $this->user_type === 'patient';
+    }
 }

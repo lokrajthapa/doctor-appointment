@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ScheduleResource\Pages;
 use App\Filament\Resources\ScheduleResource\RelationManagers;
+use App\Models\Doctor;
 use App\Models\Schedule;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -11,8 +12,14 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Forms\Components\TimePicker;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
+use Filament\Support\Enums\FontFamily;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
+
 
 class ScheduleResource extends Resource
 {
@@ -24,8 +31,16 @@ class ScheduleResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('doctor_id')
-                    ->relationship('doctor', 'id')
+                Forms\Components\Select::make('doctor_id')->hidden(fn() => auth()->user()->user_type === 'doctor')
+                ->options(function () {
+                    return Doctor::with('user')
+                        ->whereHas('user', function ($query) {
+                            $query->where('user_type', 'doctor');
+                        })
+                        ->get()
+                        ->pluck('user.name', 'id')
+                        ->toArray();
+                })
                     ->required(),
                 Forms\Components\DatePicker::make('date')
                     ->required(),
@@ -38,7 +53,21 @@ class ScheduleResource extends Resource
 
     public static function table(Table $table): Table
     {
+        $userId = Auth::user()->id;
         return $table
+        ->modifyQueryUsing(function (Builder $query) use ($userId) {
+            if (auth()->user()->user_type === 'admin') {
+                return;
+            }
+            if (auth()->user()->user_type === 'doctor') {
+                // Patient sees only their own appointments
+                $query->whereHas('doctor', function (Builder $query) use ($userId) {
+                    $query->where('user_id', $userId);
+                });
+            }
+
+        })
+
             ->columns([
                 Tables\Columns\TextColumn::make('doctor.user.name')
                     ->numeric()
@@ -77,6 +106,51 @@ class ScheduleResource extends Resource
             //
         ];
     }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+           return $infolist
+            ->schema([
+                Section::make('Doctor Details')
+                    ->columns([
+                        'sm' => 1,
+                        'xl' => 2,
+                        '2xl' => 3,
+                    ])
+                    ->schema([
+                        TextEntry::make('user.name')
+                            ->label('Name')
+                            ->icon('heroicon-m-user')
+                            ->fontFamily(FontFamily::Mono)
+                            ->iconColor('primary'),
+                        TextEntry::make('department.name')
+                            ->label('Department Name')
+                            ->icon('heroicon-m-calendar')
+                            ->iconColor('primary'),
+                        TextEntry::make('address')
+                            ->label('Address')
+                            ->icon('heroicon-m-question-mark-circle')
+                            ->iconColor('primary'),
+                        TextEntry::make('bio')
+                            ->label('Bio')
+                            ->icon('heroicon-m-clipboard-document-list')
+                            ->iconColor('primary'),
+                        TextEntry::make('created_at')
+                            ->label('Created At')
+                            ->icon('heroicon-m-calendar')
+                            ->iconColor('primary'),
+                        TextEntry::make('updated_at')
+                            ->label('Updated At')
+                            ->icon('heroicon-m-calendar')
+                            ->iconColor('primary'),
+                    ])
+            ]);
+    }
+
+
+
+
+
 
     public static function getPages(): array
     {

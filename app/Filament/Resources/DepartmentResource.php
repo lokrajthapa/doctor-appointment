@@ -7,7 +7,11 @@ use App\Filament\Resources\DepartmentResource\RelationManagers;
 use App\Models\Department;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\FontFamily;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -64,6 +68,33 @@ class DepartmentResource extends Resource
             //
         ];
     }
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Section::make('Doctor Details')
+                    ->columns([
+                        'sm' => 1,
+                        'xl' => 2,
+                        '2xl' => 3,
+                    ])
+                    ->schema([
+
+                        TextEntry::make('name')
+                            ->label('Department Name')
+                            ->icon('heroicon-m-calendar')
+                            ->iconColor('primary'),
+                        TextEntry::make('created_at')
+                            ->label('Created At')
+                            ->icon('heroicon-m-calendar')
+                            ->iconColor('primary'),
+                        TextEntry::make('updated_at')
+                            ->label('Updated At')
+                            ->icon('heroicon-m-calendar')
+                            ->iconColor('primary'),
+                    ])
+            ]);
+        }
 
     public static function getPages(): array
     {
