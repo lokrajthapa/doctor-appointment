@@ -10,10 +10,6 @@ use App\Http\Resources\ScheduleResource;
 use Illuminate\Http\JsonResponse;
 
 /**
- * @OA\Info(
- *    title="Laravel v11 API",
- *    version="1.0.0"
- * )
  *
  * @OA\Schema(
  *     schema="Schedule",
