@@ -6,16 +6,17 @@ use App\Models\Appointment;
 use App\Models\User;
 use App\Models\Doctor;
 use Illuminate\Auth\Access\Response;
-
+use Illuminate\Support\Facades\Auth;
 
 class AppointmentPolicy
 {
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(): bool
+    public function viewAny(User $user): bool
     {
-        return true;
+
+        return $user->isAdmin() || Auth::user()->patient()->exists() || Auth::user()->doctor()->exists();
     }
 
     /**

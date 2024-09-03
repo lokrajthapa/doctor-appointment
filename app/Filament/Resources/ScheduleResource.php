@@ -44,9 +44,9 @@ class ScheduleResource extends Resource
                     ->required(),
                 Forms\Components\DatePicker::make('date')
                     ->required(),
-                Forms\Components\TimePicker::make('start_time')
+                Forms\Components\TimePicker::make('start_time')->withoutSeconds()
                     ->required(),
-                Forms\Components\TimePicker::make('end_time')
+                Forms\Components\TimePicker::make('end_time')->withoutSeconds()
                     ->required(),
             ]);
     }
@@ -111,28 +111,28 @@ class ScheduleResource extends Resource
     {
            return $infolist
             ->schema([
-                Section::make('Doctor Details')
+                Section::make('Schedules Details')
                     ->columns([
                         'sm' => 1,
                         'xl' => 2,
                         '2xl' => 3,
                     ])
                     ->schema([
-                        TextEntry::make('user.name')
+                        TextEntry::make('doctor.user.name')
                             ->label('Name')
                             ->icon('heroicon-m-user')
                             ->fontFamily(FontFamily::Mono)
                             ->iconColor('primary'),
-                        TextEntry::make('department.name')
-                            ->label('Department Name')
+                        TextEntry::make('date')
+                            ->label('Date')
                             ->icon('heroicon-m-calendar')
                             ->iconColor('primary'),
-                        TextEntry::make('address')
-                            ->label('Address')
+                        TextEntry::make('start_time')
+                            ->label('Start Time')
                             ->icon('heroicon-m-question-mark-circle')
                             ->iconColor('primary'),
-                        TextEntry::make('bio')
-                            ->label('Bio')
+                        TextEntry::make('end_time')
+                            ->label('End Date')
                             ->icon('heroicon-m-clipboard-document-list')
                             ->iconColor('primary'),
                         TextEntry::make('created_at')

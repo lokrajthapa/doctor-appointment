@@ -45,9 +45,17 @@ class LoginController extends Controller
      */
     public function destroy(Request $request): JsonResponse
     {
+        // Get the current access token
+        $token = $request->user()->currentAccessToken();
 
-        $request->user()->currentAccessToken()->delete();
-        return response()->json(['message' => 'Logged out successfully'], 200);
+        // Ensure we have a valid token object before attempting to delete
+        if ($token) {
+            // Delete the token
+            $token->delete();
+            return response()->json(['message' => 'Logged out successfully'], 200);
+        }
 
+        // If no valid token is found, return a 404 response
+        return response()->json(['message' => 'No token found'], 404);
     }
 }

@@ -13,7 +13,10 @@ class ListPatients extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+            // ->visible(function(){
+            //    return auth()->user()->user_type === 'admin';
+            // }),
         ];
     }
 }

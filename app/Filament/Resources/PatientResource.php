@@ -18,6 +18,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class PatientResource extends Resource
 {
@@ -25,11 +26,12 @@ class PatientResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-eye-dropper';
 
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('user_id')
+                Forms\Components\Select::make('user_id')->hidden(fn() => auth()->user()->user_type === 'patient')
                     ->options(User::where('user_type', 'patient')->pluck('name', 'id'))->label('User')
                     ->required(),
                 Forms\Components\DatePicker::make('dob')
@@ -53,7 +55,14 @@ class PatientResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table
+        $userId = Auth::user()->id;
+        return $table->modifyQueryUsing(function (Builder $query) use ($userId) {
+            if (auth()->user()->user_type === 'patient') {
+
+                    $query->where('user_id', $userId);
+
+            }
+        })
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
                     ->numeric()

@@ -15,13 +15,13 @@ class ScheduleResource extends JsonResource
     public function toArray(Request $request): array
     {
        return [
-            'id' => $this->id,
-            'doctor_id' => $this->doctor_id,
-            'date' => $this->date,
-            'start_time' => $this->start_time,
-            'end_time' => $this->end_time,
-            'created_at' => $this->created_at->toDateTimeString(),
-            'updated_at' => $this->updated_at->toDateTimeString(),
+        'id' => $this->resource->id,
+        'doctor_id' => $this->resource->doctor_id,
+        'date' => $this->resource->date,
+        'start_time' => $this->resource->start_time,
+        'end_time' => $this->resource->end_time,
+        'created_at' => $this->resource->created_at->toDateTimeString(),
+        'updated_at' => $this->resource->updated_at->toDateTimeString(),
         ];
     }
 }

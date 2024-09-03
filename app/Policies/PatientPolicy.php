@@ -29,7 +29,7 @@ class PatientPolicy
      */
     public function create(User $user): bool
     {
-        return   $user->isAdmin()||$user->isPatient();
+        return   $user->isAdmin() || ( $user->isPatient() && !$user->patient()->count());
 
     }
 
