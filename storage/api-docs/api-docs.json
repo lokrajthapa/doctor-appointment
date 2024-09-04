@@ -237,7 +237,7 @@
                                     "password_confirmation": {
                                         "type": "string",
                                         "format": "password",
-                                        "example": "password1"
+                                        "example": "password"
                                     }
                                 },
                                 "type": "object"
@@ -332,6 +332,187 @@
                                 }
                             }
                         }
+                    }
+                }
+            }
+        },
+        "/api/patients": {
+            "get": {
+                "tags": [
+                    "Patients"
+                ],
+                "summary": "Get all patients",
+                "description": "Retrieve a list of all patients.",
+                "operationId": "4a397b69598fdd620ee7120b8610185b",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Patient"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Patients"
+                ],
+                "summary": "Create a new patient",
+                "description": "Store a newly created patient in the database.",
+                "operationId": "d81c0f99b503153ba6d47c7899a882a4",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StorePatientRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Patient created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Patient"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                }
+            }
+        },
+        "/api/patients/{id}": {
+            "get": {
+                "tags": [
+                    "Patients"
+                ],
+                "summary": "Get a specific patient",
+                "description": "Retrieve a specific patient by its ID.",
+                "operationId": "0feecbcd5339fb70ce3f9af002812b77",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Patient"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Patient not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Patients"
+                ],
+                "summary": "Update a specific patient",
+                "description": "Update the details of an existing patient.",
+                "operationId": "6b907428b808fd0fbcc6268f9ab634ba",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StorePatientRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Patient updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Patient"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Patient not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Patients"
+                ],
+                "summary": "Delete a specific patient",
+                "description": "Delete a patient by its ID.",
+                "operationId": "2a1632c6f39f39a43a35f002e573e3d1",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Patient deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Patient deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Patient not found"
                     }
                 }
             }
@@ -551,6 +732,81 @@
     },
     "components": {
         "schemas": {
+            "Patient": {
+                "title": "Patient",
+                "description": "A patient model",
+                "required": [
+                    "id",
+                    "user_id",
+                    "dob",
+                    "gender",
+                    "phone"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "The unique identifier of the patient",
+                        "type": "integer"
+                    },
+                    "user_id": {
+                        "description": "The ID of the user associated with the patient",
+                        "type": "integer"
+                    },
+                    "dob": {
+                        "description": "The date of birth of the patient",
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "gender": {
+                        "description": "The gender of the patient",
+                        "type": "string",
+                        "enum": [
+                            "male",
+                            "female",
+                            "other"
+                        ]
+                    },
+                    "phone": {
+                        "description": "The phone number of the patient",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "StorePatientRequest": {
+                "title": "Store Patient Request",
+                "description": "Schema for storing a patient",
+                "required": [
+                    "user_id",
+                    "dob",
+                    "gender",
+                    "phone"
+                ],
+                "properties": {
+                    "user_id": {
+                        "description": "The ID of the user associated with the patient",
+                        "type": "integer"
+                    },
+                    "dob": {
+                        "description": "The date of birth of the patient",
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "gender": {
+                        "description": "The gender of the patient",
+                        "type": "string",
+                        "enum": [
+                            "male",
+                            "female",
+                            "other"
+                        ]
+                    },
+                    "phone": {
+                        "description": "The phone number of the patient",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
             "Schedule": {
                 "title": "Schedule",
                 "description": "A schedule model",
@@ -634,6 +890,10 @@
         {
             "name": "Auth",
             "description": "Auth"
+        },
+        {
+            "name": "Patients",
+            "description": "Patients"
         },
         {
             "name": "Schedules",

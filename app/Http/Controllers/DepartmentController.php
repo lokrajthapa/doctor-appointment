@@ -16,7 +16,7 @@ class DepartmentController extends Controller
     {
         $departments=Department::all();
 
-        return view('departments.index', compact('departments'));
+        return response()->json($departments,200 );
     }
 
     /**
@@ -33,17 +33,16 @@ class DepartmentController extends Controller
     public function store(StoreDepartmentRequest $request)
     {
         Department::create($request->all());
-        return redirect()->route('departments.index')
-            ->with('success', 'Department created successfully.');
+        return response()->json("patient created successfuly",200 );
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Department $department)
     {
-        $department=Department::with(['doctors'])->findorfail($id);
-        return view('departments.show', compact('department'));
+        $department=Department::with(['doctors'])->findorfail($department);
+        return response()->json($department);
     }
 
     /**
@@ -51,10 +50,7 @@ class DepartmentController extends Controller
      */
     public function edit(Department $department)
     {
-
-        $department=Department::findorFail($department->id);  //i think no need of this line
-
-        return view('departments.edit', compact('department'));
+        return response()->json($department);
     }
 
     /**
