@@ -48,10 +48,9 @@ class AppointmentPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(): bool
+    public function update(User $user, Appointment $appointment): bool
     {
-        return true;
-        // return $user->doctor->id=== $appointment->doctor_id;
+        return $user->user_type ==="patient" || $user->user_type==="admin";
     }
 
     /**
@@ -74,7 +73,7 @@ class AppointmentPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete( Appointment $appointment): bool
+    public function forceDelete(Appointment $appointment): bool
     {
         return true;
     }

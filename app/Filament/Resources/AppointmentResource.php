@@ -13,8 +13,13 @@ use Filament\Resources\Resource;
 use App\Models\Patient;
 use App\Models\Schedule;
 use App\Models\User;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Components\ViewField;
 use Filament\Forms\FormsComponent;
+use Filament\Notifications\Events\DatabaseNotificationsSent;
+use Filament\Notifications\Notification;
 use Filament\Tables;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -57,16 +62,15 @@ class AppointmentResource extends Resource
                     ->label('Doctor')
                     ->options(function (callable $get) {
                         $departmentId = $get('department_id');
-                       if($departmentId)
-                       {
-                        return Doctor::with('user')->where('department_id', $departmentId)
-                        ->whereHas('user', function ($query) {
-                            $query->where('user_type', 'doctor');
-                        }) ->get()
-                        ->pluck('user.name', 'id')
-                        ->toArray();
-                       }
-                       return [];
+                        if ($departmentId) {
+                            return Doctor::with('user')->where('department_id', $departmentId)
+                                ->whereHas('user', function ($query) {
+                                    $query->where('user_type', 'doctor');
+                                })->get()
+                                ->pluck('user.name', 'id')
+                                ->toArray();
+                        }
+                        return [];
                     })->reactive() // Make it reactive to trigger schedule changes
                     ->afterStateUpdated(function ($state, callable $set) {
                         $doctor = Doctor::with('schedules')->find($state);
@@ -77,7 +81,7 @@ class AppointmentResource extends Resource
                         }
                     })
                     ->required(),
-                    ViewField::make('schedule')
+                ViewField::make('schedule')
                     ->label('Schedule')
                     ->view('components.doctor-schedule') // Blade view for rendering the schedule
                     ->columnSpan('full'),
@@ -150,6 +154,37 @@ class AppointmentResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('Reschedule')
+                ->visible(fn($record) => auth()->user()->user_type === 'doctor')
+                    ->form(function ($record) {
+                        return [
+                            DateTimePicker::make('appointment_time')
+                                ->default($record->appointment_time)
+
+
+                        ];
+                    })
+                    ->action(function ($record, $data) {
+                        $previous_date = $record->appointment_time;
+                        $record->appointment_time = $data['appointment_time'];
+                        $record->save();
+                        Notification::make()
+                            ->title('Appointment Rescheduled')
+                            ->body('The appointment scheduled for' . $previous_date . 'has been rescheduled to ' . $record->appointment_time . '.')
+                            ->success()
+                            ->duration(10)
+                            ->sendToDatabase($record->patient->user);
+
+                        event(new DatabaseNotificationsSent($record->patient->user));
+
+                        Notification::make()
+                            ->title('Appointment Rescheduled Sucessfully')
+                            ->success()
+                            ->send();
+                    })
+                    ->icon('heroicon-m-chart-pie')
+                    ->color('info')
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

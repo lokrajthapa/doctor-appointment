@@ -29,8 +29,11 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->profile(isSimple:false)
+            ->breadcrumbs(false)
+            ->profile(isSimple: false)
             ->registration(AuthRegister::class)
+            ->databaseNotifications()
+            ->databaseNotificationsPolling('15s')
             ->colors([
                 'primary' => Color::Indigo,
             ])
