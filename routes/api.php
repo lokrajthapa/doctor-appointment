@@ -17,11 +17,11 @@ Route::middleware('auth:sanctum')->group(function () {
  Route::apiResource('patients', PatientController::class);
  Route::apiResource('doctors', DoctorController::class);
  Route::apiResource('appointments', AppointmentController::class);
- Route::get('doctorsToAppointment/{id}', [AppointmentController::class, 'bookAppointment'])
-     ->name('doctor.to.appointment');
+//  Route::get('doctorsToAppointment/{id}', [AppointmentController::class, 'bookAppointment'])
+//      ->name('doctor.to.appointment');
  Route::apiResource('schedules', ScheduleController::class);
  Route::apiResource('departments', DepartmentController::class);
- Route::get('/search', [AppointmentController::class, 'search']);
+//  Route::get('/search', [AppointmentController::class, 'search']);
 
 });
 
