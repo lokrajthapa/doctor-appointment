@@ -51,7 +51,7 @@ class AppointmentResource extends Resource
                     ->required(),
                 Forms\Components\Select::make('department_id')
                     ->label('Department')
-                    ->options(Department::all()->pluck('name', 'id'))
+                    ->options(Department::pluck('name', 'id'))
                     ->reactive() // Make it reactive to trigger changes
                     ->afterStateUpdated(function ($state, callable $set) {
                         $set('doctor_id', null); // Reset doctor selection when department changes

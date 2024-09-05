@@ -6,6 +6,8 @@ use App\Filament\Resources\ScheduleResource\Pages;
 use App\Filament\Resources\ScheduleResource\RelationManagers;
 use App\Models\Doctor;
 use App\Models\Schedule;
+use Carbon\Carbon;
+use Illuminate\Validation\ValidationException;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -19,7 +21,7 @@ use Filament\Support\Enums\FontFamily;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Validation\ValidationException as ValidationValidationException;
 
 class ScheduleResource extends Resource
 {
@@ -31,42 +33,44 @@ class ScheduleResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('doctor_id')->hidden(fn() => auth()->user()->user_type === 'doctor')
-                ->options(function () {
-                    return Doctor::with('user')
-                        ->whereHas('user', function ($query) {
-                            $query->where('user_type', 'doctor');
-                        })
-                        ->get()
-                        ->pluck('user.name', 'id')
-                        ->toArray();
-                })
+                Forms\Components\Select::make('doctor_id')->hidden(fn () => auth()->user()->user_type === 'doctor')
+                    ->options(function () {
+                        return Doctor::with('user')
+                            ->whereHas('user', function ($query) {
+                                $query->where('user_type', 'doctor');
+                            })
+                            ->get()
+                            ->pluck('user.name', 'id')
+                            ->toArray();
+                    })
                     ->required(),
                 Forms\Components\DatePicker::make('date')
                     ->required(),
-                Forms\Components\TimePicker::make('start_time')->withoutSeconds()
+                Forms\Components\TimePicker::make('start_time')->label('Start Time')->withoutSeconds()
                     ->required(),
-                Forms\Components\TimePicker::make('end_time')->withoutSeconds()
+                Forms\Components\TimePicker::make('end_time')->label('End Time')->withoutSeconds()
                     ->required(),
             ]);
     }
+
+
+
 
     public static function table(Table $table): Table
     {
         $userId = Auth::user()->id;
         return $table
-        ->modifyQueryUsing(function (Builder $query) use ($userId) {
-            if (auth()->user()->user_type === 'admin') {
-                return;
-            }
-            if (auth()->user()->user_type === 'doctor') {
-                // Patient sees only their own appointments
-                $query->whereHas('doctor', function (Builder $query) use ($userId) {
-                    $query->where('user_id', $userId);
-                });
-            }
-
-        })
+            ->modifyQueryUsing(function (Builder $query) use ($userId) {
+                if (auth()->user()->user_type === 'admin') {
+                    return;
+                }
+                if (auth()->user()->user_type === 'doctor') {
+                    // Patient sees only their own appointments
+                    $query->whereHas('doctor', function (Builder $query) use ($userId) {
+                        $query->where('user_id', $userId);
+                    });
+                }
+            })
 
             ->columns([
                 Tables\Columns\TextColumn::make('doctor.user.name')
@@ -107,9 +111,12 @@ class ScheduleResource extends Resource
         ];
     }
 
+
+
+
     public static function infolist(Infolist $infolist): Infolist
     {
-           return $infolist
+        return $infolist
             ->schema([
                 Section::make('Schedules Details')
                     ->columns([

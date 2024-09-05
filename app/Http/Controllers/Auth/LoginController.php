@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\JsonResponse;
+use Laravel\Sanctum\PersonalAccessToken;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
@@ -27,7 +28,8 @@ class LoginController extends Controller
     {
 
         $request->authenticate();
-        $user=User::where('email',$request->email)->first();
+
+        $user=User::where('email',$request->email)->firstOrFail();
         $data=[
           'token'=> $user->createToken("api-token".$user->email)->plainTextToken,
           'user'=>[
@@ -49,7 +51,7 @@ class LoginController extends Controller
         $token = $request->user()->currentAccessToken();
 
         // Ensure we have a valid token object before attempting to delete
-        if ($token) {
+        if ($token instanceof PersonalAccessToken) {
             // Delete the token
             $token->delete();
             return response()->json(['message' => 'Logged out successfully'], 200);
